@@ -15,11 +15,14 @@ class TelnetGateway:
 
     def __init__(self, host, port):
         self.tn = Telnet(host, port, 5)
-        self.reader_thread = Thread(target=reader, args=[self.tn, self.update_handle], daemon=True)
+        self.reader_thread = Thread(target=reader, args=[self.tn, self._update_handle], daemon=True)
         self.reader_thread.start()
 
+    def _update_handle(self, msg):
+        self.update_handle(msg.strip())
+
     def update_handle(self, msg):
-        print(f"Received update: {msg.strip()}")
+        print(f"Received update: {msg}")
 
     def send_msg(self, msg):
         self.tn.write(msg.encode() + b"\n")
